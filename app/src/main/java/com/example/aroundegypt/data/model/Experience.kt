@@ -2,17 +2,10 @@ package com.example.aroundegypt.data.model
 
 import com.google.gson.annotations.SerializedName
 
-data class ExperiencesResponse(
-    val meta: Meta,
-    val data: List<Experience>,
-    val pagination: Pagination? = null
-)
-
 data class Meta(
     val code: Int,
     val errors: List<String>
 )
-
 data class Experience(
     val id: String,
     val title: String,

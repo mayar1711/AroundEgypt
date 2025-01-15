@@ -82,5 +82,7 @@ dependencies {
     implementation (libs.retrofit2.kotlin.coroutines.adapter)
     implementation(libs.logging.interceptor)
 
+    //coil
+    implementation (libs.coil.compose)
 
 }
