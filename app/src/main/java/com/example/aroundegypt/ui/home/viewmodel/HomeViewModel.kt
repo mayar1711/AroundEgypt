@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.aroundegypt.data.model.Experience
 import com.example.aroundegypt.data.model.ExperiencesResponse
 import com.example.aroundegypt.data.model.Meta
+import com.example.aroundegypt.data.model.SingleExperienceResponse
 import com.example.aroundegypt.data.repo.Repository
 import com.example.aroundegypt.ui.ViewState
 import com.example.aroundegypt.util.handleFetchError
@@ -49,6 +50,7 @@ class HomeViewModel @Inject constructor(private val repository: Repository) : Vi
             .collect { data ->
                 cachedExperiences = data
                 _allExperiencesState.value = ViewState.Success(data)
+                deleteAllExperiences()
                 insertExperiencesInDb(data.experiences)
             }
     }
@@ -59,9 +61,10 @@ class HomeViewModel @Inject constructor(private val repository: Repository) : Vi
             .collect { data ->
                 _recommendedExperiencesState.value = ViewState.Success(data)
                 if (repository.checkInternetConnection()) {
+                  //  deleteAllExperiences()
                     insertExperiencesInDb(data.experiences)
                 }
-            }
+        }
     }
 
     fun searchExperiences(searchText: String) {
@@ -92,6 +95,29 @@ class HomeViewModel @Inject constructor(private val repository: Repository) : Vi
                         ExperiencesResponse(experiences = recommended, meta = Meta(0, null), pagination = null)
                     )
                 }
+        }
+    }
+    fun  likeAnExperience(id:String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.postLikeAnExperience(id)
+            updateExperienceLikes(id, cachedExperiences?.experiences?.find { it.id == id }?.likesNo!! + 1)
+        }
+    }
+    private fun updateExperienceLikes(id:String, likes : Int){
+        viewModelScope.launch(Dispatchers.IO) {
+            cachedExperiences?.experiences?.map {
+                if (it.id == id){
+                    it.apply { this.likesNo = likes}
+                } else{
+                    it
+                }
+            }
+        }
+
+    }
+    private fun deleteAllExperiences() {
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.deleteAllExperiences()
         }
     }
 }

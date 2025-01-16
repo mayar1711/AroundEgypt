@@ -14,4 +14,8 @@ interface ExperienceDao {
 
     @Query("SELECT * FROM experiences")
     fun getAll(): Flow<List<Experience>>
+
+    @Query("DELETE FROM experiences")
+    suspend fun deleteAll()
+
 }

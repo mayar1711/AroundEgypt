@@ -50,5 +50,9 @@ class RepositoryImp @Inject constructor(private val remoteDataSource: RemoteData
         return networkChecker.hasInternetConnection()
     }
 
+    override suspend fun deleteAllExperiences() {
+        localDataSource.deleteAllExperiences()
+    }
+
 
 }

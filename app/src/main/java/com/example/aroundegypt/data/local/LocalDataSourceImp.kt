@@ -13,4 +13,8 @@ class LocalDataSourceImp @Inject constructor(private val experienceDao: Experien
     override fun getAllExperiences(): Flow<List<Experience>> {
         return experienceDao.getAll()
     }
+
+    override suspend fun deleteAllExperiences() {
+        experienceDao.deleteAll()
+    }
 }

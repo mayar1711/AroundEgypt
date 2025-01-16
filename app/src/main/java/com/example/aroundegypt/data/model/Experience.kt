@@ -15,7 +15,7 @@ data class Experience(
     @SerializedName("cover_photo") val coverPhoto: String,
     val description: String,
     @SerializedName("views_no") val viewsNo: Int,
-    @SerializedName("likes_no") val likesNo: Int,
+    @SerializedName("likes_no") var likesNo: Int,
     val recommended: Int,
     @SerializedName("has_video") val hasVideo: Int? = null,
     val tags: List<Tag>? = null,

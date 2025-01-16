@@ -6,5 +6,6 @@ import kotlinx.coroutines.flow.Flow
 interface LocalDataSource {
     suspend fun insertAllExperiences(experiences: List<Experience>)
     fun getAllExperiences(): Flow<List<Experience>>
+    suspend fun deleteAllExperiences()
 
 }

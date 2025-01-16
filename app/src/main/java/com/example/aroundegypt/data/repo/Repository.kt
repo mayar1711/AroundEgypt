@@ -15,4 +15,6 @@ interface Repository {
     suspend fun insertAllExperiences(experiences: List<Experience>)
     fun getAllExperiences(): Flow<List<Experience>>
     fun checkInternetConnection(): Boolean
+    suspend fun deleteAllExperiences()
+
 }

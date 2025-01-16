@@ -13,22 +13,24 @@ import javax.inject.Inject
 
 
 class RemoteDataSourceImp @Inject constructor(private val apiService: ApiService) : RemoteDataSource {
-    override suspend fun getExperiences(): Flow<ExperiencesResponse> = flow{
+    override suspend fun getExperiences(): Flow<ExperiencesResponse> = flow {
         emit(apiService.getExperiences())
     }.flowOn(Dispatchers.IO)
 
-    override suspend fun getRecommendedExperiences(): Flow<ExperiencesResponse> = flow{
+    override suspend fun getRecommendedExperiences(): Flow<ExperiencesResponse> = flow {
         emit(apiService.getRecommendedExperiences())
     }.flowOn(Dispatchers.IO)
 
-    override suspend fun getSearchedExperiences(searchText: String): Flow<ExperiencesResponse> =flow{
-        emit(apiService.getSearchedExperiences(searchText))
-    }.flowOn(Dispatchers.IO)
+    override suspend fun getSearchedExperiences(searchText: String): Flow<ExperiencesResponse> =
+        flow {
+            emit(apiService.getSearchedExperiences(searchText))
+        }.flowOn(Dispatchers.IO)
 
-    override suspend fun getSingleExperience(id: String): Flow<SingleExperienceResponse> = flow{
+    override suspend fun getSingleExperience(id: String): Flow<SingleExperienceResponse> = flow {
         emit(apiService.getSingleExperience(id))
     }.flowOn(Dispatchers.IO)
 
-    override suspend fun postLikeAnExperience(id: String): LikeAnExperienceResponse = apiService.postLikeAnExperience(id)
-
+    override suspend fun postLikeAnExperience(id: String): LikeAnExperienceResponse {
+    return apiService.postLikeAnExperience(id)
+}
 }

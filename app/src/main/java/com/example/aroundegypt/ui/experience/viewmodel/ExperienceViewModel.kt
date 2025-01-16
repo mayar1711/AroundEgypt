@@ -1,5 +1,6 @@
 package com.example.aroundegypt.ui.experience.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.aroundegypt.data.model.SingleExperienceResponse
@@ -12,6 +13,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlin.math.log
 
 @HiltViewModel
 class ExperienceViewModel @Inject constructor(private val repository: Repository) : ViewModel() {
@@ -25,6 +27,17 @@ class ExperienceViewModel @Inject constructor(private val repository: Repository
             repository.getSingleExperience(id)
                 .catch { handleFetchError(it , _singleExperienceState) }
                 .collect { data -> _singleExperienceState.value = ViewState.Success(data) }
+        }
+    }
+    fun likeExperience(id: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                val response = repository.postLikeAnExperience(id)
+                // Handle the updated like count and update the UI state accordingly
+                Log.i("TAG", "likeExperience:${response} ")
+            } catch (e: Exception) {
+                Log.i("TAG", "likeExperience: ${e.message}")
+            }
         }
     }
 }

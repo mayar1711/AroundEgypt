@@ -20,6 +20,7 @@ import coil.compose.AsyncImage
 import coil.compose.rememberAsyncImagePainter
 import com.example.aroundegypt.R
 import androidx.navigation.NavController
+import com.example.aroundegypt.ui.home.viewmodel.HomeViewModel
 
 @Composable
 fun ExperienceCard(
@@ -30,8 +31,9 @@ fun ExperienceCard(
     modifier: Modifier = Modifier,
     recommended: Boolean = false,
     isMostRecent: Boolean = false,
-    id: String = "",
-    navController: NavController? = null
+    id: String ,
+    navController: NavController? = null,
+    viewModel: HomeViewModel? = null
 ) {
     Card(
         modifier = modifier
@@ -134,7 +136,15 @@ fun ExperienceCard(
                     fontWeight = FontWeight.SemiBold
                 )
             }
-            Row(verticalAlignment = Alignment.CenterVertically) {
+            Row(verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.clickable {
+                    if(viewModel != null && id.isNotEmpty()){
+                        viewModel.likeAnExperience(id)
+
+                    }
+
+                }
+            ) {
                 Text(text = likes.toString(), style = MaterialTheme.typography.bodyMedium)
                 Icon(
                     painter = rememberAsyncImagePainter(model = R.drawable.ic_add_favorite),
