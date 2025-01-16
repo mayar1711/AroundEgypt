@@ -1,5 +1,7 @@
 package com.example.aroundegypt.data.repo
 
+import com.example.aroundegypt.data.local.LocalDataSource
+import com.example.aroundegypt.data.model.ExperienceTable
 import com.example.aroundegypt.data.model.ExperiencesResponse
 import com.example.aroundegypt.data.model.LikeAnExperienceResponse
 import com.example.aroundegypt.data.model.SingleExperienceResponse
@@ -8,7 +10,7 @@ import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 
-class RepositoryImp @Inject constructor(private val remoteDataSource: RemoteDataSource) : Repository {
+class RepositoryImp @Inject constructor(private val remoteDataSource: RemoteDataSource , private val localDataSource: LocalDataSource) : Repository {
     override suspend fun getExperiences(): Flow<ExperiencesResponse> {
         return remoteDataSource.getExperiences()
     }
@@ -27,6 +29,14 @@ class RepositoryImp @Inject constructor(private val remoteDataSource: RemoteData
 
     override suspend fun postLikeAnExperience(id: String): LikeAnExperienceResponse {
         return remoteDataSource.postLikeAnExperience(id)
+    }
+
+    override suspend fun insertAllExperiences(experiences: List<ExperienceTable>) {
+        localDataSource.insertAllExperiences(experiences)
+    }
+
+    override fun getAllExperiences(): Flow<List<ExperienceTable>> {
+        return localDataSource.getAllExperiences()
     }
 
 }

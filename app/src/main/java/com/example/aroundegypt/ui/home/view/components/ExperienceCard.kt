@@ -46,7 +46,7 @@ fun ExperienceCard(
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .background(Color(0xF3FFFFFF)) // Semi-transparent background
+                .background(Color(0xF3FFFFFF))
         ) {
             AsyncImage(
                 model = image,
