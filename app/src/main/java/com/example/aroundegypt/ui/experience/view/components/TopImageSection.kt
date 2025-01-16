@@ -31,7 +31,7 @@ fun TopImageSection(state: SingleExperienceResponse) {
     Box(modifier = Modifier.fillMaxWidth()) {
 
         AsyncImage(
-            model = state.experience.coverPhoto,
+            model = state.experience?.coverPhoto,
             contentDescription = "Experience Image",
             placeholder = rememberAsyncImagePainter(model = R.drawable.pyramids),
             modifier = Modifier
@@ -54,7 +54,7 @@ fun TopImageSection(state: SingleExperienceResponse) {
             )
             Spacer(modifier = Modifier.width(4.dp))
             Text(
-                text = state.experience.viewsNo.toString(),
+                text = state.experience?.viewsNo.toString() ?:"",
                 style = MaterialTheme.typography.labelMedium,
                 color = Color.White
             )

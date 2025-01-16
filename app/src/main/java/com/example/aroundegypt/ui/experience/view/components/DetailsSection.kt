@@ -37,12 +37,12 @@ fun DetailsSection(state: SingleExperienceResponse) {
         ) {
             Column {
                 Text(
-                    text = state.experience.title,
+                    text = state.experience?.title ?:"",
                     style = MaterialTheme.typography.headlineSmall,
                     fontWeight = FontWeight.Bold
                 )
                 Text(
-                    text = state.experience.address,
+                    text = state.experience?.address ?: "",
                     style = MaterialTheme.typography.bodyMedium,
                     color = Color.Gray
                 )
@@ -64,7 +64,7 @@ fun DetailsSection(state: SingleExperienceResponse) {
                 }
 
                 Text(
-                    text = state.experience.likesNo.toString(),
+                    text = state.experience?.likesNo.toString() ?:"",
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.primary
                 )
@@ -79,7 +79,7 @@ fun DetailsSection(state: SingleExperienceResponse) {
             modifier = Modifier.padding(bottom = 8.dp)
         )
         Text(
-            text = state.experience.detailedDescription,
+            text = state.experience?.detailedDescription ?:"",
             style = MaterialTheme.typography.bodyMedium,
             lineHeight = 20.sp
         )

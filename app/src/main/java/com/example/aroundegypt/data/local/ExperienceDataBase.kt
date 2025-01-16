@@ -4,10 +4,14 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import com.example.aroundegypt.data.model.ExperienceTable
+import androidx.room.TypeConverters
+import com.example.aroundegypt.data.model.Experience
 import com.example.aroundegypt.util.Constants
+import com.example.aroundegypt.util.Converters
 
-@Database(entities = [ExperienceTable::class], version = 1)
+@Database(entities = [Experience::class], version = 2 ,exportSchema = false)
+@TypeConverters(Converters::class)
+
 abstract class AppDatabase : RoomDatabase() {
     abstract fun experienceDao(): ExperienceDao
     companion object{

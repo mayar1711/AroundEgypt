@@ -1,6 +1,6 @@
 package com.example.aroundegypt.data.repo
 
-import com.example.aroundegypt.data.model.ExperienceTable
+import com.example.aroundegypt.data.model.Experience
 import com.example.aroundegypt.data.model.ExperiencesResponse
 import com.example.aroundegypt.data.model.LikeAnExperienceResponse
 import com.example.aroundegypt.data.model.SingleExperienceResponse
@@ -12,7 +12,7 @@ interface Repository {
     suspend fun getSearchedExperiences(searchText: String):Flow <ExperiencesResponse>
     suspend fun getSingleExperience(id: String):Flow<SingleExperienceResponse>
     suspend fun postLikeAnExperience(id: String): LikeAnExperienceResponse
-    suspend fun insertAllExperiences(experiences: List<ExperienceTable>)
-    fun getAllExperiences(): Flow<List<ExperienceTable>>
-
+    suspend fun insertAllExperiences(experiences: List<Experience>)
+    fun getAllExperiences(): Flow<List<Experience>>
+    fun checkInternetConnection(): Boolean
 }
