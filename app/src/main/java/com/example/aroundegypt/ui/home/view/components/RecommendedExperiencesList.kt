@@ -1,51 +1,52 @@
 package com.example.aroundegypt.ui.home.view.components
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.aroundegypt.data.model.ExperiencesResponse
 import com.example.aroundegypt.ui.ViewState
+import androidx.navigation.NavController
+
 
 
 @Composable
-fun RecommendedExperiencesSection(state: State<ViewState<ExperiencesResponse>>) {
-    when (val viewState = state.value) {
-        is ViewState.Loading -> CircularProgressIndicator()
+fun RecommendedExperiencesSection(
+    recommendedState: State<ViewState<ExperiencesResponse>>,
+    navController: NavController
+) {
+    when (val state = recommendedState.value) {
+        is ViewState.Loading -> {
+            LoadingView()
+        }
         is ViewState.Success -> {
-            Column(modifier = Modifier.padding(16.dp)) {
-                Text(
-                    text = "Recommended Experiences",
-                    style = MaterialTheme.typography.headlineSmall,
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier.padding(bottom = 8.dp)
-                )
+            if (state.data.experiences.isNotEmpty()) {
                 LazyRow(
-                    horizontalArrangement = Arrangement.spacedBy(12.dp),
-                    contentPadding = PaddingValues(start = 0.dp, end = 0.dp)
+                    contentPadding = PaddingValues(16.dp),
+                    horizontalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
-                    items(viewState.data.data) { experience ->
+                    items(state.data.experiences) { experience ->
                         ExperienceCard(
                             title = experience.title,
                             image = experience.coverPhoto,
                             views = experience.viewsNo,
                             likes = experience.likesNo,
-                            recommended = true
+                            recommended = true,
+                            id = experience.id,
+                            navController = navController
                         )
                     }
                 }
+            } else {
+                NoResultView()
             }
         }
-        is ViewState.Error -> Text("Error: ${viewState.message}")
+        is ViewState.Error -> {
+            ErrorView(message = state.message)
+        }
+        else -> {}
     }
 }

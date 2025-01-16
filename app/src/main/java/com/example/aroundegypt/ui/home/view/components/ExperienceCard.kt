@@ -1,6 +1,7 @@
 package com.example.aroundegypt.ui.home.view.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
@@ -18,6 +19,7 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.compose.rememberAsyncImagePainter
 import com.example.aroundegypt.R
+import androidx.navigation.NavController
 
 @Composable
 fun ExperienceCard(
@@ -27,14 +29,25 @@ fun ExperienceCard(
     likes: Int,
     modifier: Modifier = Modifier,
     recommended: Boolean = false,
-    isMostRecent: Boolean = false
+    isMostRecent: Boolean = false,
+    id: String = "",
+    navController: NavController? = null
 ) {
     Card(
         modifier = modifier
-            .fillMaxWidth(),
+            .fillMaxWidth()
+            .clickable {
+                if (navController != null && id.isNotEmpty()) {
+                    navController.navigate("experience/$id")
+                }
+            },
         shape = RoundedCornerShape(16.dp),
     ) {
-        Box(modifier = Modifier.fillMaxWidth()) {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(Color(0xF3FFFFFF))
+        ) {
             AsyncImage(
                 model = image,
                 contentDescription = null,
@@ -92,6 +105,7 @@ fun ExperienceCard(
                     modifier = Modifier.size(18.dp)
                 )
             }
+
             Row(
                 modifier = Modifier
                     .align(Alignment.Center)

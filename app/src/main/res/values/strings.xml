@@ -4,5 +4,9 @@
     <string name="Description">Description</string>
     <string name="name">Aswan, Egypt</string>
     <string name="title">"Abu Simbel Temples"</string>
-
+    <string name="Search_Results">Search Results</string>
+    <string name="recommended_experiences">Recommended Experiences</string>
+    <string name="most_recent_experiences">Most Recent</string>
+   <string name="Welcome">Welcome</string>
+    <string name="welcome">Now you can explore any experience in 360 degrees and get all the details about it, all in one place.</string>
 </resources>

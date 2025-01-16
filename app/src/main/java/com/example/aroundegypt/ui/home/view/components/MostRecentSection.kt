@@ -1,47 +1,51 @@
 package com.example.aroundegypt.ui.home.view.components
 
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.aroundegypt.data.model.ExperiencesResponse
 import com.example.aroundegypt.ui.ViewState
+import androidx.navigation.NavController
 
 
 @Composable
-fun MostRecentSection(state: State<ViewState<ExperiencesResponse>>) {
-    when (val viewState = state.value) {
-        is ViewState.Loading -> CircularProgressIndicator()
+fun MostRecentSection(
+    experiencesState: State<ViewState<ExperiencesResponse>>,
+    navController: NavController
+) {
+    when (val state = experiencesState.value) {
+        is ViewState.Loading -> {
+            LoadingView()
+        }
         is ViewState.Success -> {
-            Column(modifier = Modifier.padding(16.dp)) {
-                Text(
-                    text = "Most Recent",
-                    style = MaterialTheme.typography.headlineSmall,
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier.padding(bottom = 8.dp)
-                )
-                viewState.data.data.forEach { experience ->
-                    ExperienceCard(
-                        title = experience.title,
-                        image = experience.coverPhoto,
-                        views = experience.viewsNo,
-                        likes = experience.likesNo,
-                        modifier = Modifier.fillMaxWidth(),
-                        isMostRecent = true
-                    )
-                    Spacer(modifier = Modifier.height(12.dp))
+            if (state.data.experiences.isNotEmpty()) {
+                LazyColumn(
+                    contentPadding = PaddingValues(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(16.dp)
+                ) {
+                    items(state.data.experiences) { experience ->
+                        ExperienceCard(
+                            title = experience.title,
+                            image = experience.coverPhoto,
+                            views = experience.viewsNo,
+                            likes = experience.likesNo,
+                            isMostRecent = true,
+                            id = experience.id,
+                            navController = navController
+                        )
+                    }
                 }
+            } else {
+                NoResultView()
             }
         }
-        is ViewState.Error -> Text("Error: ${viewState.message}")
+        is ViewState.Error -> {
+            ErrorView(message = state.message)
+        }
+        else -> {}
     }
 }

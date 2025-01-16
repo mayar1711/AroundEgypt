@@ -1,9 +1,12 @@
 package com.example.aroundegypt.ui.home.view
 
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -11,71 +14,96 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
+import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.platform.rememberNestedScrollInteropConnection
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
+import com.example.aroundegypt.R
 import com.example.aroundegypt.ui.home.view.components.ExperienceList
 import com.example.aroundegypt.ui.home.view.components.MostRecentSection
 import com.example.aroundegypt.ui.home.view.components.RecommendedExperiencesSection
 import com.example.aroundegypt.ui.home.view.components.TopBar
 import com.example.aroundegypt.ui.home.viewmodel.HomeViewModel
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.PaddingValues
 
 
 @Composable
-fun Home(viewModel: HomeViewModel) {
+fun Home(viewModel: HomeViewModel, navController: NavController = rememberNavController()) {
     val experiencesState = viewModel.allExperiencesState.collectAsState()
     val recommendedState = viewModel.recommendedExperiencesState.collectAsState()
     var searchText by remember { mutableStateOf("") }
     var isSearchActive by remember { mutableStateOf(false) }
     val searchResultsState = viewModel.searchResultsState.collectAsState()
 
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .nestedScroll(rememberNestedScrollInteropConnection())
 
-    LazyColumn(
-        modifier = Modifier.fillMaxSize(),
-        contentPadding = PaddingValues(16.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        item {
-            TopBar(
-                searchText = searchText,
-                onSearchTextChanged = {
-                    searchText = it
-                    if (it.isBlank()) {
-                        isSearchActive = false
-                    } else {
-                        isSearchActive = true
-                        viewModel.searchExperiences(it)
-                    }
-                },
-                isSearchActive = isSearchActive,
-                onSearchSubmitted = {
+        TopBar(
+            searchText = searchText,
+            onSearchTextChanged = {
+                searchText = it
+                if (it.isBlank()) {
+                    isSearchActive = false
+                } else {
                     isSearchActive = true
-                    viewModel.searchExperiences(searchText)
+                    viewModel.searchExperiences(it)
                 }
-            )
-        }
+            },
+            isSearchActive = isSearchActive,
+            onSearchSubmitted = {
+                isSearchActive = true
+                viewModel.searchExperiences(searchText)
+            }
+        )
 
         if (!isSearchActive) {
-            item { WelcomeSection() }
-            item { RecommendedExperiencesSection(recommendedState) }
-            item { MostRecentSection(experiencesState) }
+            WelcomeSection()
+            Text(
+                text = stringResource(R.string.recommended_experiences),
+                style = MaterialTheme.typography.headlineSmall,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.padding(vertical = 4.dp ) .padding(horizontal = 8.dp)
+            )
+            RecommendedExperiencesSection(recommendedState, navController = navController)
+            Spacer(modifier = Modifier.height(16.dp))
+            Text(
+                text = stringResource(R.string.most_recent_experiences),
+                style = MaterialTheme.typography.headlineSmall,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.padding(vertical = 4.dp ) .padding(horizontal = 8.dp)
+            )
+            MostRecentSection(experiencesState, navController = navController)
         } else {
-            item { ExperienceList(experiencesState = searchResultsState, isSearchActive = true) }
+            Text(
+                text = stringResource(R.string.Search_Results),
+                style = MaterialTheme.typography.headlineSmall,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.padding(vertical = 8.dp)
+            )
+            ExperienceList(experiencesState = searchResultsState, isSearchActive = true)
         }
-        item { Spacer(modifier = Modifier.height(16.dp)) }
     }
 }
 
-
 @Composable
 fun WelcomeSection() {
-    androidx.compose.foundation.layout.Column(modifier = Modifier.padding(bottom = 16.dp)) {
-        Text(text = "Welcome!", style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.Bold)
-        Text(text = "Now you can explore any experience in 360 degrees and get all the details about it all in one place.", style = MaterialTheme.typography.bodyMedium,  lineHeight = 20.sp)
+    Column(modifier = Modifier.padding(8.dp)) {
+        Text(
+            text = stringResource(R.string.Welcome),
+            style = MaterialTheme.typography.headlineSmall,
+            fontWeight = FontWeight.Bold
+        )
+        Text(
+            text = stringResource(R.string.welcome),
+            style = MaterialTheme.typography.bodyMedium,
+            lineHeight = 20.sp,
+            modifier = Modifier.padding(top = 4.dp)
+        )
     }
 }

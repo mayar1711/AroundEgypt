@@ -17,10 +17,8 @@ abstract class RepoModule {
 
     @Binds
     abstract fun bindRemoteDataSource(remoteDataSourceImp: RemoteDataSourceImp): RemoteDataSource
-/*
 
     @Binds
     abstract fun bindLocalDataSource(localDataSourceImp: LocalDataSourceImp): LocalDataSource
-*/
 
 }
