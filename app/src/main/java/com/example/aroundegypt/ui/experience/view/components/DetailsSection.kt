@@ -56,9 +56,9 @@ fun DetailsSection(state: SingleExperienceResponse, viewModel: ExperienceViewMod
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.primary
                 )
+
                 IconButton(onClick = {
-                    viewModel.likeExperience(state.experience?.id ?: "")
-                }) {
+                    viewModel.likeExperience(state.experience?.id ?: ""  )}) {
                     Icon(
                         imageVector = Icons.Filled.FavoriteBorder,
                         contentDescription = "Like",

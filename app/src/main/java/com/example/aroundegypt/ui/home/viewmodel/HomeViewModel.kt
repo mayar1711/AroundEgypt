@@ -1,5 +1,6 @@
 package com.example.aroundegypt.ui.home.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.aroundegypt.data.model.Experience
@@ -37,7 +38,7 @@ class HomeViewModel @Inject constructor(private val repository: Repository) : Vi
         else
             fetchLocalExperiences()
     }
-    private fun fetchInitialData() {
+    fun fetchInitialData() {
         viewModelScope.launch(Dispatchers.IO) {
           fetchExperiences()
           fetchRecommendedExperiences()
@@ -61,7 +62,7 @@ class HomeViewModel @Inject constructor(private val repository: Repository) : Vi
             .collect { data ->
                 _recommendedExperiencesState.value = ViewState.Success(data)
                 if (repository.checkInternetConnection()) {
-                  //  deleteAllExperiences()
+                    deleteAllExperiences()
                     insertExperiencesInDb(data.experiences)
                 }
         }
@@ -97,23 +98,15 @@ class HomeViewModel @Inject constructor(private val repository: Repository) : Vi
                 }
         }
     }
-    fun  likeAnExperience(id:String) {
+    fun likeExperience(id: String) {
         viewModelScope.launch(Dispatchers.IO) {
-            repository.postLikeAnExperience(id)
-            updateExperienceLikes(id, cachedExperiences?.experiences?.find { it.id == id }?.likesNo!! + 1)
-        }
-    }
-    private fun updateExperienceLikes(id:String, likes : Int){
-        viewModelScope.launch(Dispatchers.IO) {
-            cachedExperiences?.experiences?.map {
-                if (it.id == id){
-                    it.apply { this.likesNo = likes}
-                } else{
-                    it
-                }
+            try {
+                val response = repository.postLikeAnExperience(id)
+                Log.i("TAG", "likeExperience:${response} ")
+            } catch (e: Exception) {
+                Log.i("TAG", "likeExperience: ${e.message}")
             }
         }
-
     }
     private fun deleteAllExperiences() {
         viewModelScope.launch(Dispatchers.IO) {

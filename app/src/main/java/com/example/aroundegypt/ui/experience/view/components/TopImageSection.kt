@@ -59,12 +59,7 @@ fun TopImageSection(state: SingleExperienceResponse) {
                 color = Color.White
             )
             Spacer(modifier = Modifier.weight(1f))
-            Icon(
-                painter = painterResource(id = R.drawable.ic_filter),
-                contentDescription = "photo icon",
-                tint = Color.White,
-                modifier = Modifier.size(20.dp)
-            )
+
         }
     }
 }
