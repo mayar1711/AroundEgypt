@@ -40,7 +40,7 @@ fun TopBar(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(start = 16.dp, end = 16.dp, top = 16.dp, bottom = 16.dp),
+            .padding( top = 16.dp, bottom = 8.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         IconButton(onClick = { /*TODO*/ }) {
@@ -56,7 +56,7 @@ fun TopBar(
             },
             modifier = Modifier
                 .weight(1f)
-                .height(40.dp),
+                .height(55.dp),
             leadingIcon = { Icon(imageVector = Icons.Filled.Search, contentDescription = "Search") },
             singleLine = true,
             shape = RoundedCornerShape(8.dp),
@@ -75,7 +75,7 @@ fun TopBar(
 
 
         Spacer(modifier = Modifier.width(8.dp))
-        IconButton(onClick = { /*TODO*/ }) {
+        IconButton(onClick = {  }) {
             Icon(imageVector = Icons.Filled.FilterList, contentDescription = "Filter")
         }
     }

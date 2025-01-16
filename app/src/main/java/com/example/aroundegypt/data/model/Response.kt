@@ -1,9 +1,12 @@
 package com.example.aroundegypt.data.model
 
+import com.google.gson.annotations.SerializedName
+
 
 data class SingleExperienceResponse(
     val meta: Meta,
-    val data: Experience,
+    @SerializedName("data")
+    val experience: Experience,
     val pagination: Pagination? = null
 )
 
@@ -14,6 +17,7 @@ data class LikeAnExperienceResponse(
 )
 data class ExperiencesResponse(
     val meta: Meta,
-    val data: List<Experience>,
+    @SerializedName("data")
+    val experiences: List<Experience>,
     val pagination: Pagination? = null
 )
