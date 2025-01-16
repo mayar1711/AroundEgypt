@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.aroundegypt.data.model.ExperiencesResponse
+import com.example.aroundegypt.data.model.Trie
 import com.example.aroundegypt.data.repo.Repository
 import com.example.aroundegypt.ui.ViewState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -11,67 +12,60 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlinx.coroutines.async
+import kotlinx.coroutines.Dispatchers
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(private val repository: Repository) : ViewModel() {
-    private val _experiences = MutableStateFlow<ViewState<ExperiencesResponse>>(ViewState.Loading)
-    val experiences: MutableStateFlow<ViewState<ExperiencesResponse>> = _experiences
 
-    private val _recommendedExperiences = MutableStateFlow<ViewState<ExperiencesResponse>>(ViewState.Loading)
-    val recommendedExperiences: MutableStateFlow<ViewState<ExperiencesResponse>> = _recommendedExperiences
+    private val _allExperiencesState = MutableStateFlow<ViewState<ExperiencesResponse>>(ViewState.Loading)
+    val allExperiencesState = _allExperiencesState
 
-    private val _searchedExperiences = MutableStateFlow<ViewState<ExperiencesResponse>>(ViewState.Loading)
-    val searchedExperiences: MutableStateFlow<ViewState<ExperiencesResponse>> = _searchedExperiences
+    private val _recommendedExperiencesState = MutableStateFlow<ViewState<ExperiencesResponse>>(ViewState.Loading)
+    val recommendedExperiencesState = _recommendedExperiencesState
 
-    private val _searchText = MutableStateFlow("")
-    val searchText: MutableStateFlow<String> get() = _searchText
+    private var cachedExperiences: ExperiencesResponse? = null
 
-    fun updateSearchText(text: String) {
-        _searchText.value = text
+
+    init {
+        fetchInitialData()
     }
 
-    fun searchExperiences() {
-        viewModelScope.launch {
-            _searchedExperiences.value = ViewState.Loading
-            repository.getSearchedExperiences(_searchText.value)
-                .catch { error ->
-                    _searchedExperiences.value = error.localizedMessage?.let {
-                        ViewState.Error(it)
-                    } ?: ViewState.Error("Unknown error")
-                }
-                .collect {
-                    _searchedExperiences.value = ViewState.Success(it)
-                }
+
+    private fun fetchInitialData() {
+        viewModelScope.launch(Dispatchers.IO) {
+            _allExperiencesState.value = ViewState.Loading
+            _recommendedExperiencesState.value = ViewState.Loading
+
+            val experiencesDeferred = async { fetchExperiences() }
+            val recommendedDeferred = async { fetchRecommendedExperiences() }
+
+            experiencesDeferred.await()
+            recommendedDeferred.await()
         }
     }
 
-    fun getExperiences() {
-        viewModelScope.launch {
-            _experiences.value = ViewState.Loading
-            repository.getExperiences()
-                .catch { error ->
-                    _experiences.value = error.localizedMessage?.let {
-                        ViewState.Error(it)
-                    } ?: ViewState.Error("Unknown error")
-                }
-                .collect {
-                    _experiences.value = ViewState.Success(it)
-                }
-        }
+    private suspend fun fetchExperiences() {
+        repository.getExperiences()
+            .catch { handleFetchError(it, _allExperiencesState) }
+            .collect { data ->
+                cachedExperiences = data
+                _allExperiencesState.value = ViewState.Success(data)
+            }
     }
 
-    fun getRecommendedExperiences() {
-        viewModelScope.launch {
-            _recommendedExperiences.value = ViewState.Loading
-            repository.getRecommendedExperiences()
-                .catch { error ->
-                    _recommendedExperiences.value = error.localizedMessage?.let {
-                        ViewState.Error(it)
-                    } ?: ViewState.Error("Unknown error")
-                }
-                .collect {
-                    _recommendedExperiences.value = ViewState.Success(it)
-                }
-        }
+    private suspend fun fetchRecommendedExperiences() {
+        repository.getRecommendedExperiences()
+            .catch { handleFetchError(it, _recommendedExperiencesState) }
+            .collect { data -> _recommendedExperiencesState.value = ViewState.Success(data) }
+    }
+
+
+
+    private fun <T> handleFetchError(error: Throwable, stateFlow: MutableStateFlow<ViewState<T>>) {
+        stateFlow.value = error.localizedMessage?.let {
+            ViewState.Error(it)
+        } ?: ViewState.Error("An unknown error occurred.")
+        Log.e("HomeViewModel", "Error fetching data: ", error)
     }
 }

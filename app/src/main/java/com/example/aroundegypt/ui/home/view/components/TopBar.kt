@@ -28,7 +28,6 @@ import com.example.aroundegypt.ui.home.viewmodel.HomeViewModel
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TopBar(viewModel: HomeViewModel) {
-    val searchText by viewModel.searchText.collectAsState()
 
     Row(
         modifier = Modifier
@@ -43,8 +42,8 @@ fun TopBar(viewModel: HomeViewModel) {
         Spacer(modifier = Modifier.width(8.dp))
 
         OutlinedTextField(
-            value = searchText,
-            onValueChange = { viewModel.updateSearchText(it) },
+            value = "search",
+            onValueChange = {  },
             modifier = Modifier
                 .weight(1f)
                 .height(60.dp)

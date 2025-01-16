@@ -23,13 +23,13 @@ import com.example.aroundegypt.ui.home.viewmodel.HomeViewModel
 
 @Composable
 fun Home(viewModel: HomeViewModel) {
-    val experiencesState = viewModel.experiences.collectAsState()
-    val recommendedState = viewModel.recommendedExperiences.collectAsState()
+    val experiencesState = viewModel.allExperiencesState.collectAsState()
+    val recommendedState = viewModel.recommendedExperiencesState.collectAsState()
 
-    LaunchedEffect(Unit) {
+    /*LaunchedEffect(Unit) {
         viewModel.getExperiences()
         viewModel.getRecommendedExperiences()
-    }
+    }*/
     Column(
         modifier = Modifier
             .fillMaxSize()
