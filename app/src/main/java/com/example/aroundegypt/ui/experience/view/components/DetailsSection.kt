@@ -22,40 +22,43 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.aroundegypt.R
 import com.example.aroundegypt.data.model.SingleExperienceResponse
+import com.example.aroundegypt.ui.experience.viewmodel.ExperienceViewModel
 import com.example.aroundegypt.ui.theme.favoriteColor
 
 
 @Composable
-fun DetailsSection(state: SingleExperienceResponse) {
+fun DetailsSection(state: SingleExperienceResponse, viewModel: ExperienceViewModel = hiltViewModel()) {
     Column(modifier = Modifier.padding(16.dp)) {
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
+
             Column {
                 Text(
-                    text = state.experience.title,
-                    style = MaterialTheme.typography.headlineSmall,
+                    text = state.experience?.title ?: "",
+                    style = MaterialTheme.typography.bodyMedium,
                     fontWeight = FontWeight.Bold
                 )
                 Text(
-                    text = state.experience.address,
-                    style = MaterialTheme.typography.bodyMedium,
+                    text = state.experience?.address ?: "",
+                    style = MaterialTheme.typography.bodySmall,
                     color = Color.Gray
                 )
             }
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                IconButton(onClick = {  }) {
-                    Icon(
-                        imageVector = Icons.Filled.Upload,
-                        contentDescription = "Share",
-                        tint = favoriteColor
-                    )
-                }
-                IconButton(onClick = {  }) {
+            Row(verticalAlignment = Alignment.Bottom) {
+                Text(
+                    text = state.experience?.likesNo.toString() ?: "",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.primary
+                )
+                IconButton(onClick = {
+                    viewModel.likeExperience(state.experience?.id ?: "")
+                }) {
                     Icon(
                         imageVector = Icons.Filled.FavoriteBorder,
                         contentDescription = "Like",
@@ -63,13 +66,10 @@ fun DetailsSection(state: SingleExperienceResponse) {
                     )
                 }
 
-                Text(
-                    text = state.experience.likesNo.toString(),
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.primary
-                )
+
             }
-        }
+
+       }
 
         Spacer(modifier = Modifier.height(16.dp))
         Text(
@@ -79,7 +79,7 @@ fun DetailsSection(state: SingleExperienceResponse) {
             modifier = Modifier.padding(bottom = 8.dp)
         )
         Text(
-            text = state.experience.detailedDescription,
+            text = state.experience?.detailedDescription ?:"",
             style = MaterialTheme.typography.bodyMedium,
             lineHeight = 20.sp
         )

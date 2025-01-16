@@ -6,12 +6,14 @@ import androidx.lifecycle.viewModelScope
 import com.example.aroundegypt.data.model.SingleExperienceResponse
 import com.example.aroundegypt.data.repo.Repository
 import com.example.aroundegypt.ui.ViewState
+import com.example.aroundegypt.util.handleFetchError
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlin.math.log
 
 @HiltViewModel
 class ExperienceViewModel @Inject constructor(private val repository: Repository) : ViewModel() {
@@ -23,15 +25,19 @@ class ExperienceViewModel @Inject constructor(private val repository: Repository
         viewModelScope.launch(Dispatchers.IO) {
             _singleExperienceState.value = ViewState.Loading
             repository.getSingleExperience(id)
-                .catch { handleFetchError(it) }
+                .catch { handleFetchError(it , _singleExperienceState) }
                 .collect { data -> _singleExperienceState.value = ViewState.Success(data) }
         }
     }
-
-    private fun handleFetchError(error: Throwable) {
-        _singleExperienceState.value = error.localizedMessage?.let {
-            ViewState.Error(it)
-        } ?: ViewState.Error("An unknown error occurred.")
-        Log.e("ExperienceViewModel", "Error fetching single experience: ", error)
+    fun likeExperience(id: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                val response = repository.postLikeAnExperience(id)
+                // Handle the updated like count and update the UI state accordingly
+                Log.i("TAG", "likeExperience:${response} ")
+            } catch (e: Exception) {
+                Log.i("TAG", "likeExperience: ${e.message}")
+            }
+        }
     }
 }
