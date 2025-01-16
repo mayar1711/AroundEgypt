@@ -123,7 +123,7 @@ fun ExperienceCard(
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(text = likes.toString(), style = MaterialTheme.typography.bodyMedium)
                 Icon(
-                    painter = rememberAsyncImagePainter(model = R.drawable.ic_heart_icon),
+                    painter = rememberAsyncImagePainter(model = R.drawable.ic_add_favorite),
                     contentDescription = "Heart Icon",
                     modifier = Modifier.size(24.dp),
                     tint = Color.Red

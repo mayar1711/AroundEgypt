@@ -4,15 +4,14 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.aroundegypt.data.model.ExperiencesResponse
-import com.example.aroundegypt.data.model.Trie
 import com.example.aroundegypt.data.repo.Repository
 import com.example.aroundegypt.ui.ViewState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-import kotlinx.coroutines.async
 import kotlinx.coroutines.Dispatchers
 
 @HiltViewModel
@@ -25,6 +24,9 @@ class HomeViewModel @Inject constructor(private val repository: Repository) : Vi
     val recommendedExperiencesState = _recommendedExperiencesState
 
     private var cachedExperiences: ExperiencesResponse? = null
+
+    private val _searchResultsState = MutableStateFlow<ViewState<ExperiencesResponse>>(ViewState.Loading)
+    val searchResultsState = _searchResultsState
 
 
     init {
@@ -59,7 +61,15 @@ class HomeViewModel @Inject constructor(private val repository: Repository) : Vi
             .catch { handleFetchError(it, _recommendedExperiencesState) }
             .collect { data -> _recommendedExperiencesState.value = ViewState.Success(data) }
     }
+    fun searchExperiences(searchText: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            _searchResultsState.value = ViewState.Loading
+            repository.getSearchedExperiences(searchText)
+                .catch { handleFetchError(it, _searchResultsState) }
+                .collect { data -> _searchResultsState.value = ViewState.Success(data) }
 
+        }
+    }
 
 
     private fun <T> handleFetchError(error: Throwable, stateFlow: MutableStateFlow<ViewState<T>>) {

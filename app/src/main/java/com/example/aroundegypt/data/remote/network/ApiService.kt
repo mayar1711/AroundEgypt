@@ -18,10 +18,10 @@ interface ApiService {
     @GET("experiences")
     suspend fun getSearchedExperiences(@Query("filter[title]") searchText: String): ExperiencesResponse
 
-    @GET("experiences/id")
+    @GET("experiences/{id}")
     suspend fun getSingleExperience(@Path("id") id: String): SingleExperienceResponse
 
-    @POST("experiences/id/like")
+    @POST("experiences/{id}/like")
     suspend fun postLikeAnExperience(@Path("id") id: String): LikeAnExperienceResponse
 
 }

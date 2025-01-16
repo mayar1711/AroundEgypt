@@ -11,6 +11,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.aroundegypt.ui.experience.view.ExperienceScreen
+import com.example.aroundegypt.ui.experience.viewmodel.ExperienceViewModel
 import com.example.aroundegypt.ui.home.view.Home
 import com.example.aroundegypt.ui.home.viewmodel.HomeViewModel
 import com.example.aroundegypt.ui.theme.AroundEgyptTheme
@@ -24,7 +26,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             AroundEgyptTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    HomeScreen(modifier = Modifier.padding(innerPadding))
+                    Experience(modifier = Modifier.padding(innerPadding))
                 }
             }
         }
@@ -43,4 +45,10 @@ fun GreetingPreview() {
 fun HomeScreen(modifier: Modifier = Modifier) {
     val homeViewModel: HomeViewModel = hiltViewModel()
     Home(viewModel = homeViewModel)
+}
+
+@Composable
+fun Experience(modifier: Modifier = Modifier) {
+    val homeViewModel: ExperienceViewModel = hiltViewModel()
+    ExperienceScreen("7351979e-7951-4aad-876f-49d5027438bf",viewModel = homeViewModel)
 }

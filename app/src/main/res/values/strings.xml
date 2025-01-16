@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">AroundEgypt</string>
+    <string name="discription" >The Abu Simbel temples are two massive rock temples at Abu Simbel, a village in Nubia, southern Egypt, near the border with Sudan. They are situated on the western bank of Lake Nasser, about 230 km southwest of Aswan (about 300 km by road). The twin temples were originally carved out of the mountainside in the 13th century BC, during the 19th dynasty reign of the Pharaoh Ramesses II. They serve as a lasting monument to the king and his queen Nefertari, and commemorate his victory at the Battle of Kadesh. Their huge external rock relief figures have become iconic.</string>
+    <string name="Description">Description</string>
+    <string name="name">Aswan, Egypt</string>
+    <string name="title">"Abu Simbel Temples"</string>
+
 </resources>
