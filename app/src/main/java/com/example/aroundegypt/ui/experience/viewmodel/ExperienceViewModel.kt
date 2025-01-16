@@ -33,7 +33,7 @@ class ExperienceViewModel @Inject constructor(private val repository: Repository
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 val response = repository.postLikeAnExperience(id)
-                // Handle the updated like count and update the UI state accordingly
+                getSingleExperience(id)
                 Log.i("TAG", "likeExperience:${response} ")
             } catch (e: Exception) {
                 Log.i("TAG", "likeExperience: ${e.message}")

@@ -5,6 +5,8 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -14,8 +16,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.input.nestedscroll.nestedScroll
-import androidx.compose.ui.platform.rememberNestedScrollInteropConnection
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -41,8 +41,7 @@ fun Home(viewModel: HomeViewModel, navController: NavController = rememberNavCon
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .nestedScroll(rememberNestedScrollInteropConnection())
-
+            .verticalScroll(rememberScrollState())
     ) {
         TopBar(
             searchText = searchText,
@@ -59,25 +58,21 @@ fun Home(viewModel: HomeViewModel, navController: NavController = rememberNavCon
             onSearchSubmitted = {
                 isSearchActive = true
                 viewModel.searchExperiences(searchText)
+            },
+            onBackButtonClicked = {
+                searchText = ""
+                isSearchActive = false
+            },
+            onExitSearchClicked = {
+                searchText = ""
+                isSearchActive = false
             }
         )
 
         if (!isSearchActive) {
             WelcomeSection()
-            Text(
-                text = stringResource(R.string.recommended_experiences),
-                style = MaterialTheme.typography.headlineSmall,
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier.padding(vertical = 4.dp ) .padding(horizontal = 8.dp)
-            )
             RecommendedExperiencesSection(recommendedState, navController = navController)
             Spacer(modifier = Modifier.height(16.dp))
-            Text(
-                text = stringResource(R.string.most_recent_experiences),
-                style = MaterialTheme.typography.headlineSmall,
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier.padding(vertical = 4.dp ) .padding(horizontal = 8.dp)
-            )
             MostRecentSection(experiencesState, navController = navController)
         } else {
             Text(

@@ -17,4 +17,8 @@ class LocalDataSourceImp @Inject constructor(private val experienceDao: Experien
     override suspend fun deleteAllExperiences() {
         experienceDao.deleteAll()
     }
+
+    override suspend fun updateExperienceLikes(id: String, likes: Int) {
+        experienceDao.updateExperienceLikes(id, likes)
+    }
 }

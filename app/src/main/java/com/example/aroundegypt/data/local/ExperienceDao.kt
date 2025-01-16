@@ -18,4 +18,6 @@ interface ExperienceDao {
     @Query("DELETE FROM experiences")
     suspend fun deleteAll()
 
+    @Query("UPDATE experiences SET likesNo = :likes WHERE id = :id")
+    suspend fun updateExperienceLikes(id: String, likes: Int)
 }

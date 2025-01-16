@@ -1,6 +1,5 @@
 package com.example.aroundegypt.ui.home.view.components
 
-
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -11,6 +10,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.FilterList
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Search
@@ -33,31 +34,49 @@ fun TopBar(
     searchText: String,
     onSearchTextChanged: (String) -> Unit,
     isSearchActive: Boolean,
-    onSearchSubmitted: () -> Unit
+    onSearchSubmitted: () -> Unit,
+    onBackButtonClicked: () -> Unit,
+    onExitSearchClicked: () -> Unit
 ) {
     val focusManager = LocalFocusManager.current
 
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding( top = 16.dp, bottom = 8.dp),
+            .padding(top = 16.dp, bottom = 8.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        IconButton(onClick = { /*TODO*/ }) {
-            Icon(imageVector = Icons.Filled.Menu, contentDescription = "Menu")
+        if (isSearchActive) {
+            IconButton(onClick = {
+                onBackButtonClicked()
+            }) {
+                Icon(imageVector = Icons.Filled.ArrowBack, contentDescription = "Back")
+            }
+        } else {
+            IconButton(onClick = {  }) {
+                Icon(imageVector = Icons.Filled.Menu, contentDescription = "Menu")
+            }
         }
-        Spacer(modifier = Modifier.width(8.dp))
 
+        Spacer(modifier = Modifier.width(8.dp))
 
         OutlinedTextField(
             value = searchText,
-            onValueChange = {
-                onSearchTextChanged(it)
-            },
+            onValueChange = onSearchTextChanged,
             modifier = Modifier
                 .weight(1f)
                 .height(55.dp),
             leadingIcon = { Icon(imageVector = Icons.Filled.Search, contentDescription = "Search") },
+            trailingIcon = {
+                if (isSearchActive && searchText.isNotEmpty()) {
+                    IconButton(onClick = {
+                        onExitSearchClicked()
+                        focusManager.clearFocus()
+                    }) {
+                        Icon(imageVector = Icons.Filled.Close, contentDescription = "Clear Search")
+                    }
+                }
+            },
             singleLine = true,
             shape = RoundedCornerShape(8.dp),
             keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
@@ -72,11 +91,12 @@ fun TopBar(
             )
         )
 
-
-
         Spacer(modifier = Modifier.width(8.dp))
-        IconButton(onClick = {  }) {
-            Icon(imageVector = Icons.Filled.FilterList, contentDescription = "Filter")
+
+        if (!isSearchActive) {
+            IconButton(onClick = {  }) {
+                Icon(imageVector = Icons.Filled.FilterList, contentDescription = "Filter")
+            }
         }
     }
 }

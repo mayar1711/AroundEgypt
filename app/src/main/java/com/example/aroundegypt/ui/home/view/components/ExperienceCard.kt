@@ -4,8 +4,11 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -16,11 +19,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import coil.compose.rememberAsyncImagePainter
 import com.example.aroundegypt.R
 import androidx.navigation.NavController
 import com.example.aroundegypt.ui.home.viewmodel.HomeViewModel
+import com.example.aroundegypt.ui.theme.favoriteColor
 
 @Composable
 fun ExperienceCard(
@@ -33,7 +38,7 @@ fun ExperienceCard(
     isMostRecent: Boolean = false,
     id: String ,
     navController: NavController? = null,
-    viewModel: HomeViewModel? = null
+    viewModel: HomeViewModel? = hiltViewModel()
 ) {
     Card(
         modifier = modifier
@@ -136,22 +141,18 @@ fun ExperienceCard(
                     fontWeight = FontWeight.SemiBold
                 )
             }
-            Row(verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.clickable {
-                    if(viewModel != null && id.isNotEmpty()){
-                        viewModel.likeAnExperience(id)
-
-                    }
-
-                }
-            ) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(text = likes.toString(), style = MaterialTheme.typography.bodyMedium)
-                Icon(
-                    painter = rememberAsyncImagePainter(model = R.drawable.ic_add_favorite),
-                    contentDescription = "Heart Icon",
-                    modifier = Modifier.size(24.dp),
-                    tint = Color.Red
-                )
+                IconButton(onClick = {
+                    viewModel?.likeExperience(id)
+                }) {
+                    Icon(
+                        imageVector = Icons.Filled.FavoriteBorder,
+                        contentDescription = "Like",
+                        tint = favoriteColor
+                    )
+                }
+
             }
         }
     }

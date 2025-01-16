@@ -43,7 +43,6 @@ fun ExperienceScreen(
     }
 }
 
-
 @Composable
 fun ExperienceScreenContent(state: SingleExperienceResponse) {
     Column(

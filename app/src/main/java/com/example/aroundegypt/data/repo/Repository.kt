@@ -16,5 +16,5 @@ interface Repository {
     fun getAllExperiences(): Flow<List<Experience>>
     fun checkInternetConnection(): Boolean
     suspend fun deleteAllExperiences()
-
+    suspend fun updateExperienceLikes(id: String, likes: Int)
 }

@@ -53,6 +53,8 @@ class RepositoryImp @Inject constructor(private val remoteDataSource: RemoteData
     override suspend fun deleteAllExperiences() {
         localDataSource.deleteAllExperiences()
     }
-
+    override suspend fun updateExperienceLikes(id: String, likes: Int) {
+        localDataSource.updateExperienceLikes(id, likes)
+    }
 
 }
