@@ -40,4 +40,8 @@ class ExperienceViewModel @Inject constructor(private val repository: Repository
             }
         }
     }
+    fun checkNetworkConnection(): Boolean {
+        return repository.checkInternetConnection()
+
+    }
 }

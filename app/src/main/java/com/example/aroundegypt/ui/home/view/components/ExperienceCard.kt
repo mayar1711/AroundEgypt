@@ -4,8 +4,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -18,14 +16,18 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import coil.compose.rememberAsyncImagePainter
 import com.example.aroundegypt.R
 import androidx.navigation.NavController
+import androidx.compose.runtime.rememberCoroutineScope
+import kotlinx.coroutines.launch
 import com.example.aroundegypt.ui.home.viewmodel.HomeViewModel
 import com.example.aroundegypt.ui.theme.favoriteColor
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.FavoriteBorder
 
 @Composable
 fun ExperienceCard(
@@ -36,19 +38,25 @@ fun ExperienceCard(
     modifier: Modifier = Modifier,
     recommended: Boolean = false,
     isMostRecent: Boolean = false,
-    id: String ,
+    id: String,
     navController: NavController? = null,
-    viewModel: HomeViewModel? = hiltViewModel()
+    viewModel: HomeViewModel? = null
 ) {
+    val coroutineScope = rememberCoroutineScope()
     Card(
         modifier = modifier
             .fillMaxWidth()
+            .padding(end=8.dp , start = 8.dp)
             .clickable {
                 if (navController != null && id.isNotEmpty()) {
                     navController.navigate("experience/$id")
                 }
             },
         shape = RoundedCornerShape(16.dp),
+        colors = androidx.compose.material3.CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.background.copy(alpha = 0.7f)
+        ),
+        elevation = androidx.compose.material3.CardDefaults.cardElevation(0.dp)
     ) {
         Box(
             modifier = Modifier
@@ -61,7 +69,7 @@ fun ExperienceCard(
                 placeholder = rememberAsyncImagePainter(model = R.drawable.pyramids),
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(if (isMostRecent) 154.dp else 154.dp)
+                    .height(160.dp)
                     .clip(RoundedCornerShape(16.dp)),
                 contentScale = ContentScale.Crop,
             )
@@ -113,19 +121,6 @@ fun ExperienceCard(
                 )
             }
 
-            Row(
-                modifier = Modifier
-                    .align(Alignment.Center)
-                    .padding(8.dp),
-                horizontalArrangement = Arrangement.Center
-            ) {
-                Icon(
-                    painter = rememberAsyncImagePainter(model = R.drawable.ic_eye),
-                    contentDescription = "360 Icon",
-                    tint = Color.White,
-                    modifier = Modifier.size(36.dp)
-                )
-            }
         }
         Row(
             modifier = Modifier
@@ -134,13 +129,14 @@ fun ExperienceCard(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Column {
-                Text(
-                    text = title,
-                    style = MaterialTheme.typography.bodyLarge,
-                    fontWeight = FontWeight.SemiBold
-                )
-            }
+            Text(
+                text = title,
+                style = MaterialTheme.typography.bodyLarge,
+                fontWeight = FontWeight.SemiBold,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+                modifier = Modifier.width(150.dp)
+            )
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(text = likes.toString(), style = MaterialTheme.typography.bodyMedium)
                 IconButton(onClick = {
@@ -148,7 +144,8 @@ fun ExperienceCard(
                 }) {
                     Icon(
                         imageVector = Icons.Filled.FavoriteBorder,
-                        contentDescription = "Like",
+                        contentDescription = "Heart Icon",
+                        modifier = Modifier.size(24.dp),
                         tint = favoriteColor
                     )
                 }

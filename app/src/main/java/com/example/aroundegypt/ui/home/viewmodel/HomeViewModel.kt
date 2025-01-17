@@ -12,6 +12,7 @@ import com.example.aroundegypt.ui.ViewState
 import com.example.aroundegypt.util.handleFetchError
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
@@ -38,20 +39,24 @@ class HomeViewModel @Inject constructor(private val repository: Repository) : Vi
         else
             fetchLocalExperiences()
     }
-    fun fetchInitialData() {
+    private fun fetchInitialData() {
         viewModelScope.launch(Dispatchers.IO) {
-          fetchExperiences()
-          fetchRecommendedExperiences()
+            _allExperiencesState.value = ViewState.Loading
+            _recommendedExperiencesState.value = ViewState.Loading
+
+            val experiencesDeferred = async { fetchExperiences() }
+            val recommendedDeferred = async { fetchRecommendedExperiences() }
+
+            experiencesDeferred.await()
+            recommendedDeferred.await()
         }
     }
-
     private suspend fun fetchExperiences() {
         repository.getExperiences()
             .catch { handleFetchError(it, _allExperiencesState) }
             .collect { data ->
                 cachedExperiences = data
                 _allExperiencesState.value = ViewState.Success(data)
-                deleteAllExperiences()
                 insertExperiencesInDb(data.experiences)
             }
     }
@@ -62,7 +67,6 @@ class HomeViewModel @Inject constructor(private val repository: Repository) : Vi
             .collect { data ->
                 _recommendedExperiencesState.value = ViewState.Success(data)
                 if (repository.checkInternetConnection()) {
-                    deleteAllExperiences()
                     insertExperiencesInDb(data.experiences)
                 }
         }
