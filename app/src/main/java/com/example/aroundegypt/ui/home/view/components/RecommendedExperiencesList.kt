@@ -1,10 +1,14 @@
 package com.example.aroundegypt.ui.home.view.components
 
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -36,12 +40,11 @@ fun RecommendedExperiencesSection(
                 modifier = Modifier.padding(vertical = 4.dp ) .padding(horizontal = 8.dp)
             )
             if (state.data.experiences.isNotEmpty()) {
-                LazyRow(
-                    contentPadding = PaddingValues(16.dp),
-                    horizontalArrangement = Arrangement.spacedBy(16.dp)
+                Row(modifier = Modifier
+                    .horizontalScroll(rememberScrollState())
                 ) {
-                    items(state.data.experiences) { experience ->
-                        ExperienceCard(
+                    state.data.experiences.forEach { experience ->
+                    ExperienceCard(
                             title = experience.title,
                             image = experience.coverPhoto,
                             views = experience.viewsNo,
